@@ -52,18 +52,17 @@ Env:
 
 ### `_unit_tests.yml`
 
-Copies `examples/impulse.none.yml` to `impulse.yml`, installs `requirements.txt` and `tests.requirements.txt`, runs `pytest tests/` inside `ghcr.io/astral-sh/uv:python<version>-bookworm-slim`. Timeout: 10 minutes.
+Copies `examples/impulse.none.yml` to `impulse.yml`, installs `requirements.txt` and `tests.requirements.txt` on the runner via `setup-uv`, runs `pytest tests/`. Timeout: 10 minutes.
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `python-versions` | string | `'["3.12"]'` | JSON list of Python versions for the matrix |
+| `python-version` | string | `3.12` | Python version |
 
-Container env:
+Step env:
 
 | Name | Value |
 |------|-------|
-| `DATA_PATH` | `/data` |
-| `UV_CACHE_DIR` | `/tmp/uv-cache` |
+| `DATA_PATH` | `${{ runner.temp }}/data` |
 
 ### `_build-and-push-image.yml`
 

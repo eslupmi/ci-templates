@@ -6,16 +6,13 @@ on:
       runs-on:
         type: string
         default: blacksmith-4vcpu-ubuntu-2204
-      python-versions:
+      python-version:
         type: string
-        default: '["3.12"]'
+        default: "3.12"
 
 jobs:
   tests:
     runs-on: ${{ inputs.runs-on }}
-    strategy:
-      matrix:
-        python-version: ${{ fromJSON(inputs.python-versions) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -24,18 +21,16 @@ jobs:
         run: |
           cp examples/impulse.none.yml impulse.yml
       
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: ${{ inputs.python-version }}
+          activate-environment: true
+
+      - name: Install dependencies
+        run: uv pip install -r requirements.txt -r tests.requirements.txt
+
       - name: Run tests
         timeout-minutes: 10
-        run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/app:Z" \
-            -e DATA_PATH=/data \
-            -e UV_CACHE_DIR=/tmp/uv-cache \
-            -w /app \
-            --entrypoint sh \
-            ghcr.io/astral-sh/uv:python${{ matrix.python-version }}-bookworm-slim \
-            -c "
-              uv venv /tmp/venv && \
-              uv pip install --python /tmp/venv -r requirements.txt -r tests.requirements.txt && \
-              /tmp/venv/bin/python -m pytest tests/ --color=yes -v
-            "
+        env:
+          DATA_PATH: ${{ runner.temp }}/data
+        run: python -m pytest tests/ --color=yes -v
