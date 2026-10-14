@@ -1,0 +1,53 @@
+name: _lint
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        type: string
+        default: blacksmith-4vcpu-ubuntu-2204
+      python-version:
+        type: string
+        default: "3.12"
+      exclude:
+        type: string
+        default: "[]"
+      ruff-version:
+        type: string
+        default: 0.17.0
+      mypy-version:
+        type: string
+        default: 2.4.0
+
+env:
+  FORCE_COLOR: 1
+  TERM: xterm-256color
+  PYTHON_VERSION: ${{ inputs.python-version }}
+  EXCLUDE: ${{ inputs.exclude }}
+
+jobs:
+  ruff:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: ${{ inputs.python-version }}
+          activate-environment: true
+      - name: Install ruff
+        run: uv pip install ruff==${{ inputs.ruff-version }}
+      - name: Run ruff
+        run: ruff check . --target-version "py${PYTHON_VERSION//./}" $(jq -r '.[] | "--extend-exclude=" + .' <<< "$EXCLUDE")
+
+  mypy:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: ${{ inputs.python-version }}
+          activate-environment: true
+      - name: Install dependencies
+        run: uv pip install -r requirements.txt mypy==${{ inputs.mypy-version }} types-PyYAML types-icalendar types-requests
+      - name: Run mypy
+        run: mypy --color-output --pretty $(jq -r '.[] | "--exclude=^" + . + "(/|$)"' <<< "$EXCLUDE") .
