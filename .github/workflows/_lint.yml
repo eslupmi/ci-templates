@@ -18,6 +18,9 @@ on:
       mypy-version:
         type: string
         default: 2.4.0
+      mypy-plugins:
+        type: string
+        default: "[]"
 
 env:
   FORCE_COLOR: 1
@@ -50,4 +53,12 @@ jobs:
       - name: Install dependencies
         run: uv pip install -r requirements.txt mypy==${{ inputs.mypy-version }} types-PyYAML types-icalendar types-requests
       - name: Run mypy
-        run: mypy --color-output --pretty $(jq -r '.[] | "--exclude=^" + . + "(/|$)"' <<< "$EXCLUDE") .
+        env:
+          MYPY_PLUGINS: ${{ inputs.mypy-plugins }}
+        run: |
+          plugins=$(jq -r 'join(", ")' <<< "$MYPY_PLUGINS")
+          if [ -n "$plugins" ]; then
+            printf '[mypy]\nplugins = %s\n' "$plugins" > "$RUNNER_TEMP/mypy.ini"
+            config="--config-file=$RUNNER_TEMP/mypy.ini"
+          fi
+          mypy --color-output --pretty $config $(jq -r '.[] | "--exclude=^" + . + "(/|$)"' <<< "$EXCLUDE") .

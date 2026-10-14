@@ -27,7 +27,7 @@ Templates run in the context of the caller: `actions/checkout`, `github.reposito
 
 ### `_lint.yml`
 
-Runs `ruff check .` and `mypy .` on the runner via `setup-uv`. ruff gets `--target-version py<python-version>`. mypy installs `requirements.txt` from the caller repository plus `types-PyYAML`, `types-icalendar`, `types-requests`. Other settings (rules, plugins, extra excludes) come from the caller repository config (`pyproject.toml`, `mypy.ini`).
+Runs `ruff check .` and `mypy .` on the runner via `setup-uv`. ruff gets `--target-version py<python-version>`. mypy installs `requirements.txt` from the caller repository plus `types-PyYAML`, `types-icalendar`, `types-requests`. Other settings (rules, extra excludes) come from the caller repository config (`pyproject.toml`, `mypy.ini`). If `mypy-plugins` is set, mypy runs with a generated config containing only these plugins and the caller repository config is ignored.
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -35,6 +35,7 @@ Runs `ruff check .` and `mypy .` on the runner via `setup-uv`. ruff gets `--targ
 | `exclude` | string | `[]` | JSON list of paths relative to the repository root. Passed to ruff as `--extend-exclude` and to mypy as `--exclude ^<path>(/\|$)` |
 | `ruff-version` | string | `0.17.0` | ruff version |
 | `mypy-version` | string | `2.4.0` | mypy version |
+| `mypy-plugins` | string | `[]` | JSON list of mypy plugins, e.g. `'["pydantic.mypy"]'` |
 
 ```yaml
     with:
