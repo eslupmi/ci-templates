@@ -47,7 +47,7 @@ jobs:
           token: ${{ secrets.ESLUPMI_TESTS_REPO_TOKEN_READ }}
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@2af22b5b2dcfc0729ee842c635f300f1fc5a9e9a
+        uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: "3.12"
 
