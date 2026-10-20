@@ -28,7 +28,7 @@ env:
   RESET: '\033[0m'
 
 jobs:
-  migration:
+  testing-migration:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Get latest release

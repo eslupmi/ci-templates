@@ -9,17 +9,24 @@ on:
       python-version:
         type: string
         default: "3.12"
+      repository:
+        type: string
+        default: local
+      path:
+        type: string
+        default: tests/
 
 jobs:
-  tests:
+  unit-tests:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          repository: eslupmi/impulse
-      
+          repository: ${{ inputs.repository == 'local' && github.repository || inputs.repository }}
+
       - name: Create config from none example
+        if: inputs.repository != 'local'
         run: |
           cp examples/impulse.none.yml impulse.yml
       
@@ -29,10 +36,14 @@ jobs:
           activate-environment: true
 
       - name: Install dependencies
-        run: uv pip install -r requirements.txt -r tests.requirements.txt
+        run: uv pip install -r requirements.txt${{ inputs.repository != 'local' && ' -r tests.requirements.txt' || '' }}
+
+      - name: Import tests
+        if: inputs.repository == 'local'
+        run: pytest --collect-only -q tests
 
       - name: Run tests
         timeout-minutes: 10
         env:
           DATA_PATH: ${{ runner.temp }}/data
-        run: python -m pytest tests/ --color=yes -v
+        run: python -m pytest ${{ inputs.path }} --color=yes -v

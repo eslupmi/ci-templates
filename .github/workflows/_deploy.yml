@@ -23,7 +23,7 @@ jobs:
   deploy:
     runs-on: ${{ inputs.runs-on }}
     steps:
-      - name: Check
+      - name: Check configuration
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -38,7 +38,7 @@ jobs:
               docker compose run --rm --no-deps impulse-"$messenger" python -m main --check
             done
 
-      - name: Recreate IMPulse
+      - name: Deploy IMPulse
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}

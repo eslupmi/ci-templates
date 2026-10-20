@@ -34,7 +34,7 @@ jobs:
       messenger: ${{ matrix.messenger }}
     secrets: inherit
 
-  suites:
+  test-suites:
     if: inputs.suite == '' && inputs.autotests == 'autotests'
     strategy:
       fail-fast: false
