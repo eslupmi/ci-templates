@@ -85,7 +85,7 @@ Calls `_external_tests_suite.yml` for suite `inputs.autotests` and each messenge
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `branch` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
+| `impulse-ref` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
 | `tests-ref` | string | `develop` | Ref of `eslupmi/tests` |
 | `autotests` | string | required | `autotests` or `autotests_mocked` |
 
@@ -97,7 +97,7 @@ Calls `_external_tests_suite.yml` for suites `response`, `system`, `provider`, `
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `branch` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
+| `impulse-ref` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
 | `tests-ref` | string | `develop` | Ref of `eslupmi/tests` |
 
 Secrets: requires `secrets: inherit` (see `_external_tests_suite.yml`).
@@ -108,7 +108,7 @@ Checks out `eslupmi/tests`, installs its `requirements.txt` with uv (Python 3.12
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
-| `branch` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
+| `impulse-ref` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
 | `tests-ref` | string | `develop` | Ref of `eslupmi/tests` |
 | `suite` | string | required | Suite name passed to `--suite` |
 | `messenger` | string | `""` | Messenger passed to `--messenger` |
@@ -130,7 +130,7 @@ Env:
 
 | Name | Value |
 |------|-------|
-| `IMPULSE_IMAGE` | `ghcr.io/eslupmi/impulse:${{ inputs.branch }}` |
+| `IMPULSE_IMAGE` | `ghcr.io/eslupmi/impulse:${{ inputs.impulse-ref }}` |
 | `PYTHONUNBUFFERED` | `1` |
 | `MATTERMOST_URL` | `https://mattermost.impulse.bot` |
 | `SUITE` | `${{ inputs.suite }}` |

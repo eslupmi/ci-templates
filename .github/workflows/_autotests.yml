@@ -3,7 +3,7 @@ name: _autotests
 on:
   workflow_call:
     inputs:
-      branch:
+      impulse-ref:
         required: true
         type: string
       tests-ref:
@@ -23,7 +23,7 @@ jobs:
     name: ${{ format('{0} - {1}', inputs.autotests, matrix.messenger) }}
     uses: ./.github/workflows/_external_tests_suite.yml
     with:
-      branch: ${{ inputs.branch }}
+      impulse-ref: ${{ inputs.impulse-ref }}
       tests-ref: ${{ inputs.tests-ref }}
       suite: ${{ inputs.autotests }}
       messenger: ${{ matrix.messenger }}

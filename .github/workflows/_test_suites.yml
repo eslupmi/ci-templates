@@ -3,7 +3,7 @@ name: _test_suites
 on:
   workflow_call:
     inputs:
-      branch:
+      impulse-ref:
         required: true
         type: string
       tests-ref:
@@ -19,7 +19,7 @@ jobs:
     name: ${{ matrix.suite }}
     uses: ./.github/workflows/_external_tests_suite.yml
     with:
-      branch: ${{ inputs.branch }}
+      impulse-ref: ${{ inputs.impulse-ref }}
       tests-ref: ${{ inputs.tests-ref }}
       suite: ${{ matrix.suite }}
     secrets: inherit

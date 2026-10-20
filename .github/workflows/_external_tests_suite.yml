@@ -6,7 +6,7 @@ on:
       runs-on:
         type: string
         default: blacksmith-4vcpu-ubuntu-2204
-      branch:
+      impulse-ref:
         required: true
         type: string
       tests-ref:
@@ -21,7 +21,7 @@ on:
         default: ""
 
 env:
-  IMPULSE_IMAGE: ghcr.io/eslupmi/impulse:${{ inputs.branch }}
+  IMPULSE_IMAGE: ghcr.io/eslupmi/impulse:${{ inputs.impulse-ref }}
   PYTHONUNBUFFERED: "1"
   SLACK_VERIFICATION_TOKEN: ${{ secrets.AUTOTESTS_SLACK_VERIFICATION_TOKEN }}
   SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.AUTOTESTS_SLACK_BOT_USER_OAUTH_TOKEN }}
