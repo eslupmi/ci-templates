@@ -1,4 +1,4 @@
-name: _external_tests
+name: _autotests
 
 on:
   workflow_call:
@@ -11,16 +11,11 @@ on:
         default: main
       autotests:
         description: autotests or autotests_mocked
+        required: true
         type: string
-        default: ""
-      suite:
-        description: run only this suite
-        type: string
-        default: ""
 
 jobs:
   autotests:
-    if: inputs.suite == '' && inputs.autotests != ''
     strategy:
       fail-fast: false
       matrix:
@@ -32,18 +27,4 @@ jobs:
       tests-ref: ${{ inputs.tests-ref }}
       suite: ${{ inputs.autotests }}
       messenger: ${{ matrix.messenger }}
-    secrets: inherit
-
-  test-suites:
-    if: inputs.suite == '' && inputs.autotests == 'autotests'
-    strategy:
-      fail-fast: false
-      matrix:
-        suite: [response, system, provider, browser]
-    name: ${{ matrix.suite }}
-    uses: ./.github/workflows/_external_tests_suite.yml
-    with:
-      branch: ${{ inputs.branch }}
-      tests-ref: ${{ inputs.tests-ref }}
-      suite: ${{ matrix.suite }}
     secrets: inherit

@@ -19,7 +19,8 @@ Templates run in the context of the caller: `actions/checkout`, `github.reposito
 | [`_lint.yml`](#_lintyml) | ruff and mypy | `blacksmith-4vcpu-ubuntu-2204` |
 | [`_unit_tests.yml`](#_unit_testsyml) | pytest in the caller repository | `blacksmith-4vcpu-ubuntu-2204` |
 | [`_build-and-push-image.yml`](#_build-and-push-imageyml) | Build and push Docker image to GHCR | `ubuntu-24.04` |
-| [`_external_tests.yml`](#_external_testsyml) | Fan out external test suites | — (uses `_external_tests_suite.yml` default) |
+| [`_autotests.yml`](#_autotestsyml) | Fan out autotests by messenger | — (uses `_external_tests_suite.yml` default) |
+| [`_test_suites.yml`](#_test_suitesyml) | Fan out response, system, provider, browser | — (uses `_external_tests_suite.yml` default) |
 | [`_external_tests_suite.yml`](#_external_tests_suiteyml) | Run one suite from `eslupmi/tests` | `blacksmith-4vcpu-ubuntu-2204` |
 | [`_migration.yml`](#_migrationyml) | Check incidents upgrade/downgrade migration on a server | `blacksmith-4vcpu-ubuntu-2204` |
 | [`_deploy.yml`](#_deployyml) | Deploy via docker compose over SSH | `ubuntu-24.04` |
@@ -78,19 +79,26 @@ Inputs: `runs-on` only. Required caller permissions: `contents: read`, `packages
 
 Secrets: `GITHUB_TOKEN`.
 
-### `_external_tests.yml`
+### `_autotests.yml`
 
-Calls `_external_tests_suite.yml`:
-
-- `autotests` job: suite `inputs.autotests` for each messenger (`slack`, `mattermost`, `telegram`). Runs when `autotests` is set and `suite` is empty.
-- `suites` job: `response`, `system`, `provider`, `browser`. Runs when `autotests == 'autotests'` and `suite` is empty.
+Calls `_external_tests_suite.yml` for suite `inputs.autotests` and each messenger (`slack`, `mattermost`, `telegram`).
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
 | `branch` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
 | `tests-ref` | string | `main` | Ref of `eslupmi/tests` |
-| `autotests` | string | `""` | `autotests` or `autotests_mocked` |
-| `suite` | string | `""` | Run only this suite |
+| `autotests` | string | required | `autotests` or `autotests_mocked` |
+
+Secrets: requires `secrets: inherit` (see `_external_tests_suite.yml`).
+
+### `_test_suites.yml`
+
+Calls `_external_tests_suite.yml` for suites `response`, `system`, `provider`, `browser`.
+
+| Input | Type | Default | Description |
+|-------|------|---------|-------------|
+| `branch` | string | required | Image tag of `ghcr.io/eslupmi/impulse` |
+| `tests-ref` | string | `main` | Ref of `eslupmi/tests` |
 
 Secrets: requires `secrets: inherit` (see `_external_tests_suite.yml`).
 
