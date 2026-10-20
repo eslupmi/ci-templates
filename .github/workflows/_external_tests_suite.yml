@@ -10,8 +10,8 @@ on:
         required: true
         type: string
       tests-ref:
-        required: true
         type: string
+        default: develop
       suite:
         required: true
         type: string
